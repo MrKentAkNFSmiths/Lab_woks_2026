@@ -1,7 +1,5 @@
 from tokenizer import tokenize
 
-a = input()
-tokens = tokenize(a)
 def validate(tokens):
     priorities = {'+': 1, '-': 1, '*': 2, '/': 2, '//':2, "%":2}
     operators_stack = []
@@ -16,8 +14,6 @@ def validate(tokens):
         elif token_type == "right_bracket":
             while operators_stack and operators_stack[-1][0] != "left_bracket":
                 output_queue.append(operators_stack.pop())
-
-
             operators_stack.pop()
 
 
@@ -35,7 +31,39 @@ def validate(tokens):
 
     return output_queue
 
-print(validate(tokens))
+def calculate(input_queue : list):
+    stack = []
+    for token_type, token_value in input_queue:
+        if token_type == "number":
+            stack.append(token_value)
+        elif token_type == "operator":
+            second_number = stack.pop()
+            first_number = stack.pop()
+            if token_value == "+":
+                stack.append(first_number+second_number)
+            if token_value == "-":
+                stack.append(first_number-second_number)
+            if token_value == "*":
+                stack.append(first_number*second_number)
+            if token_value == "/":
+                stack.append(first_number/second_number)
+            if token_value == "//":
+                stack.append(first_number//second_number)
+            if token_value == "%":
+                stack.append(first_number%second_number)
+    return stack[0]
+
+a = input()
+tokens = tokenize(a)
+print(tokens)
+b = validate(tokens)
+print(b)
+print(calculate(b))
+
+
+
+
+
 
 
 

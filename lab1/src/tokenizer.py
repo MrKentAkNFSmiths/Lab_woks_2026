@@ -38,7 +38,7 @@ def tokenize(expr):
             elif char == '.':
                 state = 'fractional_number'
                 current_token += char
-            elif char in ['+', '-', '*', '/', '^']:
+            elif char in ['+', '-', '*', '/', '^', '%', '//']:
                 token_append()
                 tokens.append(('operator', char))
                 current_token = ''
@@ -54,7 +54,7 @@ def tokenize(expr):
         elif state == 'fractional_number':
             if char.isdigit():
                 current_token += char
-            elif char in ['+', '-', '*', '/', '^']:
+            elif char in ['+', '-', '*', '/', '^', '%', '//']:
                 token_append()
                 tokens.append(('operator', char))
                 current_token = ''

@@ -1,17 +1,20 @@
 import sys
+
 import pytest
 
-from toolkit.tokenizer import tokenize
+from toolkit.__main__ import main
 from toolkit.calculator import calculate, validate
 from toolkit.converter import convert
 from toolkit.errors import (
-    empty_expression_error,
-    missing_operand_error,
+    below_absolute_zero_error,
     consecutive_operators_error,
     division_by_zero_error,
-    unknown_unit_error, incompatible_units_error, below_absolute_zero_error,
+    empty_expression_error,
+    incompatible_units_error,
+    missing_operand_error,
+    unknown_unit_error,
 )
-from toolkit.__main__ import main
+from toolkit.tokenizer import tokenize
 
 
 # Вспомогательная функция для полного цикла вычисления
@@ -122,7 +125,7 @@ class TestCLI:
         with pytest.raises(SystemExit) as exc_info:
             main()
 
-        captured = capsys.readouterr()
+
         assert exc_info.value.code in (1, 2)
 
     def test_cli_convert_success(self, monkeypatch, capsys):

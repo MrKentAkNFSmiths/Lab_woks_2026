@@ -1,9 +1,10 @@
 def tokenize(expr):
+    expr = expr.replace('//', '\0')
     tokens = []
     state = 'start'
     current_token = ''
-
     can_be_unary = True
+
     def token_append():
         if state == 'fractional_number':
             return tokens.append(('number', float(current_token)))
@@ -11,8 +12,11 @@ def tokenize(expr):
             return tokens.append(('number', int(current_token)))
 
     for char in expr:
+        if char == '\0':
+            char = '//'
         if char.isspace():
             continue
+
         if state == 'start':
             if char.isdigit():
                 state = 'number'
@@ -67,10 +71,7 @@ def tokenize(expr):
                 state = 'start'
                 can_be_unary = False
 
-
     if state in ('number', 'fractional_number') and current_token:
         token_append()
 
     return tokens
-
-

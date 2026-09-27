@@ -1,6 +1,6 @@
 from tokenizer import tokenize
 
-def validate(tokens):
+def reverse_polish_notation(tokens):
     priorities = {'+': 1, '-': 1, '*': 2, '/': 2, '//':2, "%":2}
     operators_stack = []
     output_queue = []
@@ -56,7 +56,7 @@ def calculate(input_queue : list):
 a = input()
 tokens = tokenize(a)
 print(tokens)
-b = validate(tokens)
+b = reverse_polish_notation(tokens)
 print(b)
 print(calculate(b))
 

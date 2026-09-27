@@ -15,7 +15,7 @@ ___
 
 ```bash
 python3 -m venv venv
-source venv/bin/activete 
+source venv/bin/activate 
 pip3 intsall  ".[dev]"
 ```
 

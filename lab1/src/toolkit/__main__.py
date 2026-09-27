@@ -1,12 +1,16 @@
-import sys
 import argparse
+import sys
 
-from .calculator import calculate
-from .tokenizer import tokenize
+from toolkit.errors import validation_error
+
+from .calculator import calculate, validate
 from .converter import convert
+from .tokenizer import tokenize
+
 
 def calculation_call(expression: str):
     expression = tokenize(expression)
+    expression = validate(expression)
     expression = calculate(expression)
     return expression
 
@@ -21,22 +25,21 @@ def main():
         prog="toolkit",
         description="CLI calculator and converter of units",
         usage="""
-  python -m toolkit calc "EXPRESSION"
-  python -m toolkit convert VALUE --from UNIT --to UNIT
-  python -m toolkit --help""",
+  python3 -m toolkit calc "EXPRESSION"
+  python3 -m toolkit convert VALUE --from UNIT --to UNIT
+  python3 -m toolkit --help""",
         epilog="""
 How to use:
 ---------------------------------------------------------
   calc:
-    Выполняет математические вычисления. Математическое 
-    выражение обязательно нужно оборачивать в кавычки, 
-    чтобы терминал правильно распознал спецсимволы.
-    Example: python -m toolkit calc "(2+3*5)/7"
+    Performs math calculations. The math expression must be wrapped in quotes
+    so the terminal correctly recognizes special characters.
+    Example: python3 -m toolkit calc "(2+3*5)/7"
 
   convert:
-    Конвертирует единицы измерения. Требует передать 
-    само число и два обязательных флага: --from и --to.
-    Пример: python -m toolkit convert 1500 --from m --to km
+    Converts units of measurement. Requires passing
+    the number itself and two required flags: --from and --to.
+    Example: python3 -m toolkit convert 1500 --from m --to km
 ---------------------------------------------------------""",
         formatter_class=argparse.RawTextHelpFormatter
     )
@@ -69,7 +72,6 @@ How to use:
         help="Type UNIT to which you want to convert"
     )
 
-    # Если скрипт запущен без аргументов, принудительно выводим help
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -79,11 +81,11 @@ How to use:
     if args.command == "calc":
         try:
             result = calculation_call(args.expression)
-            print(f"Calculation result{result}")
-        except Exception as e:
-            print(f"Ошибка вычисления: {e}", file=sys.stderr)
-            sys.exit(1)
-
+            print(f"Calculation result: {result}")
+        except validation_error as e:
+            print(f"Calculation error: {e}", file=sys.stderr)
+            sys.exit(2)
+        sys.exit(0)
 
     elif args.command == "convert":
         try:
@@ -92,11 +94,12 @@ How to use:
 
             print(f"Convertation result: {result} {args.to_unit}")
 
-        except ValueError as e:
+        except validation_error as e:
 
-            print(f"Ошибка конвертации: {e}", file=sys.stderr)
+            print(f"Convertation error: {e}", file=sys.stderr)
 
-            sys.exit(1)
+            sys.exit(2)
+        sys.exit(0)
 
 
 if __name__ == "__main__":

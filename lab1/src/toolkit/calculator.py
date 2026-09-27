@@ -117,5 +117,5 @@ def calculate(input_queue: list[tuple[str, str | int | float]]) -> int | float:
             elif token_value == "%":
                 stack.append(first_number % second_number)
             elif token_value == "^":
-                stack.append(first_number ^ second_number)
+                stack.append(first_number ** second_number)
     return stack[0]

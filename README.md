@@ -16,7 +16,7 @@ ___
 ```bash
 python3 -m venv venv
 source venv/bin/activate 
-pip3 intsall  ".[dev]"
+pip3 install -e ".[dev]"
 ```
 
 ## Команды

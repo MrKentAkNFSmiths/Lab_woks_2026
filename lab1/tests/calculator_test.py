@@ -1,6 +1,6 @@
 import sys
-
 import pytest
+
 from toolkit.__main__ import main
 from toolkit.calculator import calculate, validate
 from toolkit.converter import convert

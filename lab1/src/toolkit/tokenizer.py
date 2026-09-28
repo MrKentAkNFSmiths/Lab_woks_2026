@@ -19,7 +19,7 @@ def tokenize(expr: str) -> list[tuple[str, str | int | float]]:
             - 'right_bracket': закрывающая скобка ')'
 
     Raises:
-        invalid_character_error: Если выражение содержит запрещенные символы или буквы.
+        invalid_character_error: Если выражение содержит запрещенные символы или точки в неверном формате.
         consecutive_operators_error: Если два бинарных оператора идут подряд без операнда.
     """
     expr = expr.replace('//', '\0')
@@ -31,6 +31,9 @@ def tokenize(expr: str) -> list[tuple[str, str | int | float]]:
 
     def token_append():
         """Вспомогательная функция для сохранения числа из накопителя current_token в список токенов."""
+        if current_token.endswith('.'): # число не может заканчиваться точкой
+            raise invalid_character_error("Decimal point must be followed by digits")
+
         if state == 'fractional_number':
             return tokens.append(('number', float(current_token)))
         else:
@@ -50,6 +53,8 @@ def tokenize(expr: str) -> list[tuple[str, str | int | float]]:
                 state = 'number'
                 current_token = char
                 can_be_unary = False
+            elif char == '.':
+                raise invalid_character_error("Standalone or leading decimal point is not allowed")
             elif char in ['+', '-', '*', '/', '^', '%', '//']:
                 if prev_type == "operator":
                     raise consecutive_operators_error("Two binary operators in a row")
@@ -89,6 +94,8 @@ def tokenize(expr: str) -> list[tuple[str, str | int | float]]:
         elif state == 'fractional_number':
             if char.isdigit():
                 current_token += char
+            elif char == '.': # Проверка на вторую точку в дробном числе
+                raise invalid_character_error("Multiple decimal points in number")
             elif char in ['+', '-', '*', '/', '^', '%', '//']:
                 token_append()
                 tokens.append(('operator', char))
@@ -106,5 +113,4 @@ def tokenize(expr: str) -> list[tuple[str, str | int | float]]:
     if state in ('number', 'fractional_number') and current_token:
         token_append()
         prev_type = 'number'
-
     return tokens
